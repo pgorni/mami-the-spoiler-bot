@@ -48,6 +48,8 @@ The bot requires a Discord developer token. You can obtain one [here](https://di
 - Ruby (tested on 2.3.3)
 - [discordrb](https://github.com/meew0/discordrb) ~> 3.2.1
 - [rot13](https://github.com/jrobertson/rot13) ~> 0.1.3
+- [Sequel](https://github.com/jeremyevans/sequel) ~> 4.47.0
+- [sqlite3-ruby](https://github.com/sparklemotion/sqlite3-ruby) ~> 1.3.13
 
 ### Contributing
 The project is under the GNU GPLv3 license. In order to contribute:
@@ -59,8 +61,7 @@ The project is under the GNU GPLv3 license. In order to contribute:
 
 ### To do
 - increase spec tests coverage
-- make the per-server config persistent
+- ~~make the per-server config persistent~~
 - add the status check command
 - change the prefix
 - add animated examples to the README.md file
-
