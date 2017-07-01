@@ -65,3 +65,4 @@ The project is under the GNU GPLv3 license. In order to contribute:
 - add the status check command
 - change the prefix
 - add animated examples to the README.md file
+- write help
