@@ -20,6 +20,9 @@ Multiple spoilers in one message are supported.
 ##### Mami style
 `[spoiler description]:[spoiler text]`
 
+### Requirements
+The bot requires the "manage messages" permission.
+
 ### Administrator commands
 The following commands can be used only by users with the "administrator" permissions.
 The default prefix is `!` and can be changed in the `bot.rb` file.
@@ -39,6 +42,7 @@ You currently have to host it yourself, but I'll host one instance myself soon; 
 
 ### Known issues
 - see the "Mobile devices" section
+- the diacritic signs or special characters currently don't work; decoding fails
 
 ### Installing
 Install the dependencies listed below. Next just clone/download this repository and change your config in the `config.yaml` file.
@@ -62,6 +66,7 @@ The project is under the GNU GPLv3 license. In order to contribute:
 ### To do
 - increase spec tests coverage
 - ~~make the per-server config persistent~~
+- make the diacritic signs work
 - add the status check command
 - change the prefix
 - add animated examples to the README.md file
