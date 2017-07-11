@@ -22,16 +22,21 @@ class SpoilerBotEncoder
 
 	def self.enc_standard(text, offset=13)
 		standard_regex = /\[spoiler\](.+?)\[\/spoiler\]/
+		# We don't want any asterisks in the text, because that'd mess with the formatting
+		text.gsub!("*", "")
 		return text.gsub(standard_regex) {|spoiler_with_tags| "**" + Rot13.rotate(spoiler_with_tags.match(standard_regex)[1], offset) + "**"} 
 	end
 
 	def self.enc_modern(text, offset=13)
 		modern_regex = /\[(?<spoiler_description>.+?)\]:\[(?<spoiler_text>.+?)\]/
+		# We don't want any asterisks in the text, because that'd mess with the formatting
+		text.gsub!("*", "")
 		return text.gsub(modern_regex) {|spoiler| "*#{spoiler.match(modern_regex)["spoiler_description"]}:* **#{Rot13.rotate(spoiler.match(modern_regex)["spoiler_text"], offset)}**"}
 	end
 
 	def self.decode(text, offset=-13)
-		return text.gsub(/\*\*(?<caesar>[\p{Word}\s]+)\*\*/) {|spoiler_with_tags| Rot13.rotate(spoiler_with_tags, offset)}
+		regex = /\*\*(.+?)\*\*/
+		return text.gsub(regex) {|spoiler_with_tags| Rot13.rotate(spoiler_with_tags, offset)}
 	end
 
 end
