@@ -9,7 +9,7 @@ unless File.exist?('spoilerbot_configs.db')
 		primary_key :id, unique: true, null: false
 		Integer :server_id, unique: true, null: false
 		String :emoji, null: false
-		Integer :delay, null: false
+		Float :delay, null: false
 		Integer :offset, null: false
 	end
 	puts "Database created."

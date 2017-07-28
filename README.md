@@ -42,7 +42,6 @@ You currently have to host it yourself, but I'll host one instance myself soon; 
 
 ### Known issues
 - see the "Mobile devices" section
-- the diacritic signs or special characters currently don't work; decoding fails
 
 ### Installing
 Install the dependencies listed below. Next just clone/download this repository and change your config in the `config.yaml` file.
