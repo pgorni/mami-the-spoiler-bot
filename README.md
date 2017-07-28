@@ -12,6 +12,7 @@ This approach is one of the best ones due to the following reasons:
 
 ### Mobile devices
 The spoiler bot works on mobile devices. The mobile version of Discord, however, has some issues with caching. **Because of that fact, the default delay between deleting the original message and the "safe" message is set to 4 seconds.** This setting should work on most devices, but *it's probably a good idea* to test it on your server and increase the delay if such a need arises.
+Also, if your internet connection's poor you *may* still see spoilers. This is also Discord's fault.
 
 ### Spoiler syntax
 Multiple spoilers in one message are supported.
@@ -37,11 +38,18 @@ Example: `!set_emoji 🤔` will set the emoji used while decoding the spoiler to
 #### set_offset
 Example: `!set_offset 2` will set the ROT13 offset to 2.
 
+### User commands
+The following commands are available to everyone.
+
+#### mami_test
+This command can be used to check if the bot is online and working well before attempting to spoil. It can also be used to check if the bot settings work for everyone.
+
 ### Is the bot publicly hosted somewhere?
 You currently have to host it yourself, but I'll host one instance myself soon; probably with the next update.
 
 ### Known issues
 - see the "Mobile devices" section
+- if you change the decoding emoji, older messages with the old decoding emoji will stop being decoded - you probably can react to these messages with the new decoding emoji and it'll enable their decoding
 
 ### Installing
 Install the dependencies listed below. Next just clone/download this repository and change your config in the `config.yaml` file.
@@ -65,8 +73,8 @@ The project is under the GNU GPLv3 license. In order to contribute:
 ### To do
 - increase spec tests coverage
 - ~~make the per-server config persistent~~
-- make the diacritic signs work
-- add the status check command
+- ~~make the diacritic signs work~~
+- ~~add the status check command~~
 - change the prefix
 - add animated examples to the README.md file
 - write help

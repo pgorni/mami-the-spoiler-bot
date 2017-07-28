@@ -66,5 +66,17 @@ RSpec.describe "spoilerbot" do
 
 			expect(decoded_text).to eq("**test**")
 		end
+
+		it "correctly decodes the spoiler with non-alphanumeric characters and diacritic signs" do
+			decoded_text = SpoilerBotEncoder.decode("**grfg%ą&$grfg~!**")
+
+			expect(decoded_text).to eq("**test%ą&$test~!**")
+		end
+	end
+
+	context "database" do
+		it "expects database to exist" do 
+			expect(File.exist?('spoilerbot_configs.db')).to eq(true)
+		end
 	end
 end
