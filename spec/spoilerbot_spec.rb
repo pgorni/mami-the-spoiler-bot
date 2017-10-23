@@ -1,4 +1,4 @@
-require './spoilerbot.rb'
+require './lib/spoilerbot.rb'
 require 'rot13'
 
 RSpec.describe "spoilerbot" do

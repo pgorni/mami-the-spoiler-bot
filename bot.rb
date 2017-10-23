@@ -1,13 +1,8 @@
 require 'discordrb'
-require 'yaml'
-require './spoilerbot.rb'
-
-# Load the bot's config.
-CONFIG = YAML.load_file('config.yaml')
+require './lib/spoilerbot.rb'
 
 # Create the bot
-bot = Discordrb::Commands::CommandBot.new token: CONFIG['token'], client_id: CONFIG['id'], prefix: "!"
-
+bot = Discordrb::Commands::CommandBot.new token: ENV['DISCORD_BOT_TOKEN'], client_id: ENV['DISCORD_BOT_ID'], prefix: "!"
 bot.include! MamiTheSpoilerBot
 
 puts "This bot's invite URL is #{bot.invite_url}."

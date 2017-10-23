@@ -4,7 +4,7 @@ require 'sequel'
 
 $MamiDB = Sequel.connect('sqlite://spoilerbot_configs.db') 
 
-unless File.exist?('spoilerbot_configs.db')
+unless $MamiDB.table_exists?(:configs)
     $MamiDB.create_table :configs do
         primary_key :id, unique: true, null: false
         Integer :server_id, unique: true, null: false
@@ -131,9 +131,12 @@ module MamiTheSpoilerBot
     end
 
     reaction_add() do |event|
-        if event.emoji.name == server_config[event.channel.server.id][:emoji] and event.user.current_bot? == false
-            timeout = rate_limiter.rate_limited?(:decoding, event.channel)
-            timeout == false ? event.user.pm(SpoilerBotEncoder.decode(event.message.text)) : event.user.pm("Calm down for #{timeout.ceil} more seconds.")
+        # Do not do anything if the reaction was added by the bot itself
+        unless event.user.current_bot? 
+            if event.emoji.name == server_config[event.channel.server.id][:emoji] and event.message.from_bot?
+                timeout = rate_limiter.rate_limited?(:decoding, event.channel)
+                event.user.pm(!timeout ? SpoilerBotEncoder.decode(event.message.text) : "Calm down for #{timeout.ceil} more #{timeout.ceil == 1 ? "second" : "seconds"}.")
+            end
         end
     end
 
@@ -161,11 +164,18 @@ module MamiTheSpoilerBot
     end
 
     command(:mami_test) do |event|
-        next if rate_limiter.rate_limited?(:test, event.channel)
-        emoji, delay, _ = server_config[event.server.id].values
-        event.message.delete
-        sleep(delay)
-        event.respond("Mami is ready!").create_reaction(emoji)
+
+        timeout = rate_limiter.rate_limited?(:test, event.channel)
+
+        unless timeout
+            emoji, delay, _ = server_config[event.server.id].values
+            event.message.delete
+            sleep(delay)
+            event.respond("Mami is ready!").create_reaction(emoji)
+        else
+            event.respond("Everything is OK, but wait #{timeout.to_i} #{timeout.to_i == 1 ? "second" : "seconds"}.")
+        end
+
     end
 
 
