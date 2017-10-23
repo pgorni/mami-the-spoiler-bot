@@ -53,10 +53,12 @@ You currently have to host it yourself, but I'll host one instance myself soon; 
 - if you change the decoding emoji, older messages with the old decoding emoji will stop being decoded - you probably can react to these messages with the new decoding emoji and it'll enable their decoding
 
 ### Installing
-Install the dependencies listed below. Next just clone/download this repository and set the following environment variables like this:
+Just clone/download this repository and set the following environment variables like this:
 
 - `export DISCORD_BOT_TOKEN=<token>`
 - `export DISCORD_BOT_ID=<bot_client_id>`
+
+Next, install the dependencies listed below (you can do so with `bundle install` if you have Bundler installed on your system). 
 
 The bot requires a Discord bot token. You can obtain one [here](https://discordapp.com/developers/applications/me).
 
