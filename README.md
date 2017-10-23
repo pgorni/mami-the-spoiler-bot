@@ -58,7 +58,7 @@ Just clone/download this repository and set the following environment variables 
 - `export DISCORD_BOT_TOKEN=<token>`
 - `export DISCORD_BOT_ID=<bot_client_id>`
 
-Next, install the dependencies listed below (you can do so with `bundle install` if you have Bundler installed on your system). 
+Next, install the dependencies listed below (you can do so with `bundle install --without development` if you have Bundler installed on your system). 
 
 The bot requires a Discord bot token. You can obtain one [here](https://discordapp.com/developers/applications/me).
 
