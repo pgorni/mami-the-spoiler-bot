@@ -1,30 +1,12 @@
 require 'rot13'
 require 'discordrb'
-require 'sequel'
-
-$MamiDB = Sequel.connect('sqlite://spoilerbot_configs.db') 
-
-unless $MamiDB.table_exists?(:configs)
-    $MamiDB.create_table :configs do
-        primary_key :id, unique: true, null: false
-        Integer :server_id, unique: true, null: false
-        String :emoji, null: false
-        Float :delay, null: false
-        Integer :offset, null: false
-    end
-    puts "Database created."
-end
-
-
-
 
 class SpoilerBotEncoder
 
-    def self.enc_standard(text, offset=13)
-        standard_regex = /\[spoiler\](.+?)\[\/spoiler\]/
+    def self.enc_standard(text, offset=13, regex)
         # We don't want any asterisks in the text, because that'd mess with the formatting
         text.gsub!("*", "")
-        return text.gsub(standard_regex) {|spoiler_with_tags| "**" + Rot13.rotate(spoiler_with_tags.match(standard_regex)[1], offset) + "**"} 
+        return text.gsub(regex) {|spoiler_with_tags| "**" + Rot13.rotate(spoiler_with_tags.match(regex)[1], offset) + "**"} 
     end
 
     def self.enc_modern(text, offset=13)
@@ -47,6 +29,7 @@ module MamiTheSpoilerBot
 
     standard_regex = /\[spoiler\](.+?)\[\/spoiler\]/
     modern_regex = /\[(?<spoiler_description>.+?)\]:\[(?<spoiler_text>.+?)\]/
+    dollar_sign_regex = /\$\$(.+?)\$\$/
 
     rate_limiter = Discordrb::Commands::SimpleRateLimiter.new
     rate_limiter.bucket :decoding, delay: 5 
@@ -72,7 +55,6 @@ module MamiTheSpoilerBot
 
     # When the bot joins a server, create default config for it and save it in the DB
     server_create do |event|
-
         server_config[event.server.id] = {"emoji": "❓", "delay": 4, "offset": 13}
 
         $MamiDB[:configs].insert(server_id: event.server.id, emoji: "❓", delay: 4, offset: 13)
@@ -94,14 +76,15 @@ module MamiTheSpoilerBot
         # Get the values for the server from the config
         emoji, delay, offset = server_config[event.server.id].values
 
-        # Delete the message, fast!
+        # Delete the message after waiting for a couple of miliseconds
+        sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
         event.message.delete
 
         # Duplicate original text
         safe_text = event.text.dup
 
         # Substitute the spoilers
-        safe_text = SpoilerBotEncoder.enc_standard(safe_text, offset)
+        safe_text = SpoilerBotEncoder.enc_standard(safe_text, offset, standard_regex)
 
         # Wait a while so that mobile devices don't lag behind
         sleep(delay)
@@ -114,7 +97,8 @@ module MamiTheSpoilerBot
         # Get the values for the server from the config
         emoji, delay, offset = server_config[event.server.id].values
 
-        # Delete the message, fast!
+        # Delete the message after waiting for a couple of miliseconds
+        sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
         event.message.delete
 
         # Duplicate original text
@@ -122,6 +106,27 @@ module MamiTheSpoilerBot
 
         # Substitute the spoilers
         safe_text = SpoilerBotEncoder.enc_modern(safe_text, offset)
+
+        # Wait a while so that mobile devices don't lag behind
+        sleep(delay)
+
+        # Post the spoilerless message and react to that message
+        event.respond("CAUTION! This message may contain spoilers!\n#{event.author.mention} said: #{safe_text}").create_reaction(emoji)
+    end
+
+    message(contains: dollar_sign_regex) do |event|
+        # Get the values for the server from the config
+        emoji, delay, offset = server_config[event.server.id].values
+
+        # Delete the message after waiting for a couple of miliseconds
+        sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
+        event.message.delete
+
+        # Duplicate original text
+        safe_text = event.text.dup
+
+        # Substitute the spoilers
+        safe_text = SpoilerBotEncoder.enc_standard(safe_text, offset, dollar_sign_regex)
 
         # Wait a while so that mobile devices don't lag behind
         sleep(delay)
@@ -169,6 +174,10 @@ module MamiTheSpoilerBot
 
         unless timeout
             emoji, delay, _ = server_config[event.server.id].values
+            if ENV["MAMI_DELETION_DELAY"]
+                puts "Will now sleep #{ENV["MAMI_DELETION_DELAY"]}s."
+                sleep(ENV["MAMI_DELETION_DELAY"].to_f)
+            end
             event.message.delete
             sleep(delay)
             event.respond("Mami is ready!").create_reaction(emoji)
