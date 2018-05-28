@@ -134,7 +134,7 @@ module MamiTheSpoilerBot
         # Do not do anything if the reaction was added by the bot itself
         unless event.user.current_bot? 
             if event.emoji.name == server_config[event.channel.server.id][:emoji] and event.message.from_bot?
-                timeout = rate_limiter.rate_limited?(:decoding, event.channel)
+                timeout = rate_limiter.rate_limited?(:decoding, event.user)
                 event.user.pm(!timeout ? SpoilerBotEncoder.decode(event.message.text) : "Calm down for #{timeout.ceil} more #{timeout.ceil == 1 ? "second" : "seconds"}.")
             end
         end
@@ -165,7 +165,7 @@ module MamiTheSpoilerBot
 
     command(:mami_test) do |event|
 
-        timeout = rate_limiter.rate_limited?(:test, event.channel)
+        timeout = rate_limiter.rate_limited?(:test, event.user)
 
         unless timeout
             emoji, delay, _ = server_config[event.server.id].values
