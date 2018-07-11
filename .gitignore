@@ -1,2 +1,4 @@
 # Don't track the configs database
-spoilerbot_configs.db
+mami_server_configs.db
+
+.env
