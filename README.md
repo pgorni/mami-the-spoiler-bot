@@ -31,21 +31,26 @@ The bot requires the "manage messages" permission.
 ### Administrator commands
 The following commands can be used only by users with the "manage channels" permissions.
 The default prefix is `!` and can be changed by specifying the `MAMI_PREFIX` variable.
+All the examples below assume you're using the default `!` prefix.
 
 #### mami set_delay
-Example: `!set_delay 3.5` will set the delay between deleting the original message and sending the spoilerless one to 3.5 seconds.
+Example: `!mami set_delay 3.5` will set the delay between deleting the original message and sending the spoilerless one to 3.5 seconds.
 
 #### mami set_emoji
-Example: `!set_emoji 🤔` will set the emoji used while decoding the spoiler to 🤔.
+Example: `!mami set_emoji 🤔` will set the emoji used while decoding the spoiler to 🤔.
 **It probably doesn't work with server-specific emoji.**
 
 #### mami set_offset
-Example: `!set_offset 2` will set the ROT13 offset to 2.
+Example: `!mami set_offset 2` will set the ROT13 offset to 2.
+
+#### mami display_config
+Example: `!mami display_config` will reply with the current settings for this server.
 
 ### User commands
 The following commands are available to everyone.
+All the examples below assume you're using the default `!` prefix.
 
-#### mami mami_test
+#### mami test
 This command can be used to check if the bot is online and working well before attempting to spoil. It can also be used to check if the bot settings work for everyone.
 The default rate limit is 5 seconds.
 
