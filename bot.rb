@@ -51,7 +51,7 @@ bot = Discordrb::Commands::CommandBot.new(
 )
 bot.include! MamiTheSpoilerBot
 
-puts "[INFO] This bot's invite URL is #{bot.invite_url}."
+puts "[INFO] This bot's invite URL is #{bot.invite_url(permission_bits: 8192)}."
 puts '[INFO] Click on it to invite it to your server.'
 
 bot.run
