@@ -13,7 +13,7 @@ GEM
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.6)
-    ffi (1.9.18)
+    ffi (1.9.24)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     mime-types (3.1)
@@ -22,7 +22,7 @@ GEM
     mysql2 (0.4.10)
     netrc (0.11.0)
     opus-ruby (1.0.1)
-      ffi
+      ffi (~> 1.9.18)
     pg (0.18.4)
     rbnacl (3.4.0)
       ffi
