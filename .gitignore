@@ -1,4 +1,5 @@
 # Don't track the configs database
 mami_server_configs.db
+mami_server_configs.sqlite
 
 .env

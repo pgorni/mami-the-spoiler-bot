@@ -14,7 +14,7 @@ This approach is one of the best ones due to the following reasons:
 The bot is somewhat compatible with mobile devices. The mobile version of Discord, however, has some issues with caching. **Because of that fact, the default delay between deleting the original message and the "safe" message is set to 5 seconds.** This setting should work on most devices, but *it's probably a good idea* to test it on your server and increase the delay if such a need arises. (I've seen some devices that lagged unless the delay was set to 6.5s...)
 Also, if your internet connection's poor you *may* still see spoilers. This isn't the bot's fault, obviously.
 
-There's also an option to set a delay *before* the original message is deleted. This may come in handy for those who want to host their own bots and know the delays between their servers and Discord. Setting this value may improve the bot's compatibility with mobiles. See more in the "Installation" section.
+There's also an option to set a delay *before* the original message is deleted. This may come in handy for those who want to host their own bots and know the delays between their servers and Discord. Setting this value may improve the bot's compatibility with mobiles. See more in the "Configuration" section.
 
 ### Spoiler syntax
 Multiple spoilers in one message are supported.
@@ -62,32 +62,89 @@ You currently have to host it yourself, but I'll host one instance myself soon; 
 - if you change the decoding emoji, older messages with the old decoding emoji will stop being decoded - you probably can react to these messages with the new decoding emoji and it'll enable their decoding
 
 ### Installing
+
 Just clone/download this repository and set the following environment variables like this:
 
 - `export MAMI_DISCORD_BOT_TOKEN=<token>`
 - `export MAMI_DISCORD_BOT_ID=<bot_client_id>`
 
+If you don't have a Discord bot token and ID, you can create them [here](https://discordapp.com/developers/applications/me).
+
 Next, install the dependencies listed below (you can do so with `bundle install --without development` if you have Bundler installed on your system). 
 
-The bot uses a database to store per-server configs.
+The bot uses a database to store per-server configs. As of now, the bot supports MySQL2, SQLite3 and PostgreSQL databases.
+
+There are 3 ways to store the configs:
+
+#### 1. Use an external database system and connect to it with the `MAMI_DB` environment variable
+
 You can specify the `MAMI_DB` variable (ex.: `export MAMI_DB=(...)` in order to connect to an external database. The bot will understand a database connection URI (more on this [here](https://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-Using+the+Sequel.connect+method)).
-If you don't specify a database URI, a default SQLite3 database file `mami_server_configs.db` will be created.
-As of now, the bot supports MySQL2 and SQLite3 databases.
+
+#### 2. Use a default SQLite3 database
+
+If you don't specify a database URI, a default SQLite3 database file `mami_server_configs.sqlite` will be created in the bot's directory.
+This is the easiest option if you just run the bot on your PC or a VPS without using Docker.
+
+#### 3. Use a custom SQLite3 file path with the `MAMI_SQLITE3_DB_CUSTOM_FILE` variable
+
+If you want to use a SQLite3 file as your database, but want to use Docker, you can use this variable to specify where the SQLite3 file will be created.
+For example, if the dockerized bot has a volume link like `/docker-container-data/mami-the-spoiler-bot:/mami_db` specified and you set the `MAMI_SQLITE3_DB_CUSTOM_FILE` variable to `/mami_db/mami_db.sqlite`, the database will be created on the host machine instead of the Docker container.
+**If you didn't do this, the database would be destroyed upon the container's restart.**
+
+### Configuration
+
+Now that the bot's installed, you can configure it with more environment variables.
+
+#### Setting a deletion delay
 
 You can set a timeout executed **before** deleting a message with a spoiler. This may raise compatibility with mobile devices.
 You can do so by setting a `MAMI_DELETION_DELAY` environment variable.
 
+#### Changing the prefix
+
 You can change the prefix for the commands by setting the `MAMI_PREFIX` environment variable.
 
-The bot requires a Discord bot token. You can obtain one [here](https://discordapp.com/developers/applications/me).
+#### Changing the decoding and test command rate limit delays
+
+You can change the decoding rate limit with the `MAMI_DECODING_RL` environment variable (the default rate limit is 5 seconds). Just remember that people like to spam the decoding button ;)
+
+Similarly, the rate limit used in the `!mami test` command can be changed by setting the `MAMI_TEST_CMD_RL` variable.
+
+### Docker support
+
+The bot actually works with Docker. Here's a sample `docker-compose.yml` file:
+
+```yaml
+version: '2'
+services:
+  bot:
+    image: pgorni/mami-the-spoiler-bot:latest
+    volumes:
+    # You *probably* want to set this if you used the MAMI_SQLITE3_DB_CUSTOM_FILE variable
+    # or you used the default DB configuration. 
+    - /some/path/on/host/mami-the-spoiler-bot:/.
+    environment:
+      - MAMI_DISCORD_BOT_ID=
+      - MAMI_DISCORD_BOT_TOKEN=
+      - MAMI_DELETION_DELAY=
+      # - MAMI_DB=
+      # - MAMI_SQLITE3_DB_CUSTOM_FILE= You don't need to set this if you use the MAMI_DB variable.
+      - MAMI_PREFIX="!"
+      - MAMI_DECODING_RL=5
+      - MAMI_TEST_CMD_RL=5
+    restart: unless-stopped
+```
+Edit it as you wish, save it as `docker-compose.yml` and then just run `docker-compose up`. 
+(Note: you have to have Docker Compose installed on your system to do this.)
 
 ### Dependencies
-- Ruby (tested on 2.3.3 and 2.4.2)
+- Ruby (tested on 2.3.3, 2.4.2 and 2.5.1)
 - [discordrb](https://github.com/meew0/discordrb) ~> 3.2.1
 - [rot13](https://github.com/jrobertson/rot13) ~> 0.1.3
 - [Sequel](https://github.com/jeremyevans/sequel) ~> 5.1.0
 - [sqlite3-ruby](https://github.com/sparklemotion/sqlite3-ruby) ~> 1.3.13
 - [mysql2](https://github.com/brianmario/mysql2) ~> 0.4.10
+- [pg](https://bitbucket.org/ged/ruby-pg/wiki/Home) ~> 0.18.4
 
 ### Contributing
 The project is under the GNU GPLv3 license. In order to contribute:
@@ -99,7 +156,7 @@ The project is under the GNU GPLv3 license. In order to contribute:
 
 ### To do
 - increase spec tests coverage
-- dockerize
+- ~~dockerize~~
 - ~~make the per-server config persistent~~
 - ~~make the diacritic signs work~~
 - ~~add the status check command~~

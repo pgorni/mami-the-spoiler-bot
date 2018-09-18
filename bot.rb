@@ -14,9 +14,21 @@ if ENV["MAMI_DELETION_DELAY"]
   puts "[INFO] The bot will wait for #{ENV["MAMI_DELETION_DELAY"]} before deleting a message."
 end
 
-
-puts "[DB] Trying to connect to the DB specified in MAMI_DB" if ENV['MAMI_DB']
-$MamiDB = Sequel.connect(ENV['MAMI_DB'] || 'sqlite://mami_server_configs.db') 
+begin
+  $MamiDB = if ENV['MAMI_DB']
+    puts "[DB] Trying to connect to the DB specified in MAMI_DB"
+    Sequel.connect(ENV['MAMI_DB'])
+  elsif ENV['MAMI_SQLITE3_DB_CUSTOM_FILE']
+    puts "[DB] Trying to connect to a SQLite3 database file specified in MAMI_SQLITE3_DB_CUSTOM_FILE"
+    Sequel.sqlite(ENV['MAMI_SQLITE3_DB_CUSTOM_FILE'])
+  else
+    puts "[DB] Connecting to standard SQLite3 DB."
+    Sequel.sqlite('mami_server_configs.sqlite')
+  end
+rescue Sequel::DatabaseConnectionError => e
+  puts "[ERR] Connection to DB failed, exiting."
+  exit
+end
 
 unless $MamiDB.table_exists?(:mami_server_configs)
   $MamiDB.create_table :mami_server_configs do

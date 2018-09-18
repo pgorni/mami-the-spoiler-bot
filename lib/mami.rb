@@ -10,9 +10,10 @@ module MamiTheSpoilerBot
   DOLLAR_SIGN_REGEX = /\$\$(.+?)\$\$/
 
   rate_limiter = Discordrb::Commands::SimpleRateLimiter.new
-  # TODO: make this user-customizable
-  rate_limiter.bucket :decoding, delay: 5 
-  rate_limiter.bucket :test, delay: 5
+  puts "[INFO] Will use a decoding rate limit of #{ENV['MAMI_DECODING_RL'].to_f}s." if ENV['MAMI_DECODING_RL']
+  puts "[INFO] Will use a rate limit of #{ENV['MAMI_DECODING_RL'].to_f}s for the test command." if ENV['MAMI_TEST_CMD_RL']
+  rate_limiter.bucket :decoding, delay: ENV['MAMI_DECODING_RL'].to_f || 5 
+  rate_limiter.bucket :test, delay: ENV['MAMI_TEST_CMD_RL'].to_f || 5
 
   # Server config
   server_config = {}
