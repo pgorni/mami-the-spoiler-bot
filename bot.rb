@@ -33,7 +33,7 @@ end
 unless $MamiDB.table_exists?(:mami_server_configs)
   $MamiDB.create_table :mami_server_configs do
     primary_key :id, unique: true, null: false
-    Integer :server_id, unique: true, null: false
+    Bignum :server_id, unique: true, null: false
     String :emoji, null: false
     Float :delay, null: false
     Integer :offset, null: false
