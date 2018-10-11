@@ -12,7 +12,7 @@ RUN apk add ca-certificates && update-ca-certificates && apk add openssl
 RUN apk add build-base
 
 # get Mami requirements
-RUN apk add libsodium mariadb-client mariadb-dev sqlite-dev postgresql-dev
+RUN apk add mariadb-dev sqlite-dev postgresql-dev
 
 # move everything
 COPY . /app

@@ -80,6 +80,11 @@ There are 3 ways to store the configs:
 
 You can specify the `MAMI_DB` variable (ex.: `export MAMI_DB=(...)` in order to connect to an external database. The bot will understand a database connection URI (more on this [here](https://sequel.jeremyevans.net/rdoc/files/doc/opening_databases_rdoc.html#label-Using+the+Sequel.connect+method)).
 
+**Note 1: The database has to exist first. The bot doesn't create databases on its own.**
+
+**Note 2: If you have special symbols in your password, for example: '@', you have to URL-encode it. More on this can be found [here](https://github.com/jeremyevans/sequel/issues/1361). There are several URL-encoding tools available online.**
+
+
 #### 2. Use a default SQLite3 database
 
 If you don't specify a database URI, a default SQLite3 database file `mami_server_configs.sqlite` will be created in the bot's directory.
