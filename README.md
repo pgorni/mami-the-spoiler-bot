@@ -1,6 +1,7 @@
 # Mami the Spoiler Bot
 
 ### Intro
+
 *Mami the Spoiler Bot* is a bot which replaces [spoilers](http://tvtropes.org/pmwiki/pmwiki.php/Main/Spoiler) with their [ROT13](https://en.wikipedia.org/wiki/ROT13) counterparts. This way no human should be able to read them (unless they are able to decipher ROT13 on-the-fly).
 
 When the bot detects a message matching the syntax, the original message is quickly deleted. After that the bot reposts the original message with the spoiler text substituted and reacts to it with a specified emoji. When the emoji is clicked (and with that a new reaction added), the bot decodes the message and sends it using a private message.
@@ -9,6 +10,22 @@ This approach is one of the best ones due to the following reasons:
 - it works on every machine the same way and doesn't require installing additional extensions (like CSS themes etc.)
 - even if the bot dies in some nuclear attack, the spoilers still can be deciphered "by hand"
 - it works on the mobile devices (requires a little tweaking, but it's possible)
+
+### Animated example
+
+![mami_basic.gif](./docs/mami_basic.gif)
+
+And some more with the extended syntax:
+
+![mami_extended.gif](./docs/mami_extended.gif)
+
+After clicking the buttons, you get some messages from the bot...
+
+![mami_inc_msg.png](./docs/mami_inc_msg.png)
+
+Seems they contain the deciphered messages!
+
+![mami_dec.png](./docs/mami_dec.png)
 
 ### Mobile devices
 The bot is somewhat compatible with mobile devices. The mobile version of Discord, however, has some issues with caching. **Because of that fact, the default delay between deleting the original message and the "safe" message is set to 5 seconds.** This setting should work on most devices, but *it's probably a good idea* to test it on your server and increase the delay if such a need arises. (I've seen some devices that lagged unless the delay was set to 6.5s...)
