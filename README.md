@@ -13,19 +13,19 @@ This approach is one of the best ones due to the following reasons:
 
 ### Animated example
 
-![mami_basic.gif](./docs/mami_basic.gif)
+![mami_basic.gif](./doc/mami_basic.gif)
 
 And some more with the extended syntax:
 
-![mami_extended.gif](./docs/mami_extended.gif)
+![mami_extended.gif](./doc/mami_extended.gif)
 
 After clicking the buttons, you get some messages from the bot...
 
-![mami_inc_msg.png](./docs/mami_inc_msg.png)
+![mami_inc_msg.png](./doc/mami_inc_msg.png)
 
 Seems they contain the deciphered messages!
 
-![mami_dec.png](./docs/mami_dec.png)
+![mami_dec.png](./doc/mami_dec.png)
 
 ### Mobile devices
 The bot is somewhat compatible with mobile devices. The mobile version of Discord, however, has some issues with caching. **Because of that fact, the default delay between deleting the original message and the "safe" message is set to 5 seconds.** This setting should work on most devices, but *it's probably a good idea* to test it on your server and increase the delay if such a need arises. (I've seen some devices that lagged unless the delay was set to 6.5s...)
