@@ -47,8 +47,15 @@ The bot requires the "manage messages" permission.
 
 ### Administrator commands
 The following commands can be used only by users with the "manage channels" permissions.
-The default prefix is `!` and can be changed by specifying the `MAMI_PREFIX` variable.
+The default prefix is `!` and can be changed by specifying the `MAMI_PREFIX` environment variable.
 All the examples below assume you're using the default `!` prefix.
+
+You can also change the command itself by setting the `MAMI_CUSTOM_BOT_COMMAND_NAME` environment variable.
+Example: the default way to call the bot would be `!mami <command>`. If you set the `MAMI_PREFIX` environment variable to `~` and `MAMI_CUSTOM_BOT_COMMAND_NAME` to `spoilers`, the bot will have to be called by typing `~spoilers <command>`.
+All the examples below assume you're using the default `mami` command.
+
+#### mami help
+Actually display the bot's usage and most of what is written below.
 
 #### mami set_delay
 Example: `!mami set_delay 3.5` will set the delay between deleting the original message and sending the spoilerless one to 3.5 seconds.
@@ -65,14 +72,14 @@ Example: `!mami display_config` will reply with the current settings for this se
 
 ### User commands
 The following commands are available to everyone.
-All the examples below assume you're using the default `!` prefix.
+All the examples below assume you're using the default `!` prefix and the default `mami` command.
 
 #### mami test
 This command can be used to check if the bot is online and working well before attempting to spoil. It can also be used to check if the bot settings work for everyone.
 The default rate limit is 5 seconds.
 
 ### Is the bot publicly hosted somewhere?
-You currently have to host it yourself, but I'll host one instance myself soon; ~~probably with the next update~~ when I can afford to host it :(
+No, but it probably will be soon enough.
 
 ### Known issues
 - see the "Mobile devices" section
@@ -152,6 +159,7 @@ services:
       # - MAMI_DB=
       # - MAMI_SQLITE3_DB_CUSTOM_FILE= You don't need to set this if you use the MAMI_DB variable.
       - MAMI_PREFIX="!"
+      - MAMI_CUSTOM_BOT_COMMAND_NAME="mami"
       - MAMI_DECODING_RL=5
       - MAMI_TEST_CMD_RL=5
     restart: unless-stopped
@@ -183,5 +191,5 @@ The project is under the GNU GPLv3 license. In order to contribute:
 - ~~make the diacritic signs work~~
 - ~~add the status check command~~
 - ~~change the prefix~~
-- add animated examples to the README.md file
-- write help
+- ~~add animated examples to the README.md file~~
+- ~~write help~~

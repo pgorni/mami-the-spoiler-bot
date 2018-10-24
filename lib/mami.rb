@@ -8,6 +8,7 @@ module MamiTheSpoilerBot
   STANDARD_REGEX = /\[spoiler\](.+?)\[\/spoiler\]/
   MODERN_REGEX = /\[(?<spoiler_description>.+?)\]:\[(?<spoiler_text>.+?)\]/
   DOLLAR_SIGN_REGEX = /\$\$(.+?)\$\$/
+  MAIN_COMMAND_NAME = ENV['MAMI_CUSTOM_BOT_COMMAND_NAME'] ? ENV['MAMI_CUSTOM_BOT_COMMAND_NAME'].to_sym : :mami
 
   rate_limiter = Discordrb::Commands::SimpleRateLimiter.new
   puts "[INFO] Will use a decoding rate limit of #{ENV['MAMI_DECODING_RL'].to_f}s." if ENV['MAMI_DECODING_RL']
@@ -138,7 +139,7 @@ module MamiTheSpoilerBot
   end
 
   # Commands
-  command(:mami) do |event, command, *args|
+  command(MAIN_COMMAND_NAME) do |event, command, *args|
     server_id = event.server.id
 
     case command
@@ -150,13 +151,13 @@ module MamiTheSpoilerBot
       end
 
       setting = $1
-      case setting
-      when "delay"
-        set_val = args.first.to_f
-      when "offset"
-        set_val = args.first.to_i
-      when "emoji"
-        set_val = args.first
+      set_val = case setting
+        when "delay"
+          args.first.to_f
+        when "offset"
+          args.first.to_i
+        when "emoji"
+          args.first
       end
 
       server_config[server_id][setting.to_sym] = set_val
@@ -174,7 +175,7 @@ module MamiTheSpoilerBot
         end
         event.message.delete
         sleep(delay)
-        event.respond("Mami is ready!").create_reaction(emoji)
+        event.respond("The bot is ready!").create_reaction(emoji)
       else
         event.respond("Everything is OK, but wait #{timeout.to_i} #{timeout.to_i == 1 ? "second" : "seconds"}.")
       end
@@ -185,7 +186,45 @@ module MamiTheSpoilerBot
         next 
       end
       emoji, delay, offset = server_config[server_id].values
-      event.respond("#{event.author.mention}: emoji: #{emoji}, delay: #{delay}, ROT13 offset: #{offset}, servers: #{server_config.count}")
+      event.channel.send_embed do |embed|
+        embed.title = "Mami the Spoiler Bot"
+        embed.description = "This server's configuration data is below."
+        embed.colour = "#FFFF00"
+        embed.add_field(name: "emoji", value: "#{emoji}")
+        embed.add_field(name: "delay", value: "#{delay}")
+        embed.add_field(name: "ROT13 offset", value: "#{offset}")
+        embed.add_field(name: "servers connected to", value: "#{server_config.count}")
+      end
+    when "help"
+      botcall = "#{event.bot.prefix}#{MAIN_COMMAND_NAME}"
+      event.channel.send_embed do |embed|
+        embed.title = 'Mami the Spoiler Bot'
+        embed.description = "A simple bot for encoding spoilers"
+        embed.colour = "#FFFF00"
+        embed.add_field(
+          name: "Usage", 
+          value: [
+            "Just type a message with your preferred spoiler syntax.\n",
+            "\n",
+            "1. BBCode style: `[spoiler]some bad spoiler[/spoiler]`\n",
+            "2. Mami style: `[your favorite show]:[who dies first]`\n",
+            "3. Dollar sign style: `$$some bad spoiler$$`\n",
+            "\n",
+            "The message will disappear and will reappear encoded after **#{server_config[event.server.id][:delay]}s**."
+          ].join("")
+        )
+        embed.add_field(
+          name: "Config", 
+          value: [
+            "You have to have the *manage channels* permission to be able to use most of these commands.\n",
+            "\n",
+            "`#{botcall} test`: test the bot's settings\n",
+            "`#{botcall} set_delay <delay>`: set how many seconds should pass before the encoded message is posted again\n",
+            "`#{botcall} set_offset <offset>`: change the ROT13 offset\n",
+            "`#{botcall} display_config`: display the current configuration\n"
+          ].join("")
+        )
+      end
     end
   end
 

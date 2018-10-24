@@ -41,13 +41,18 @@ unless $MamiDB.table_exists?(:mami_server_configs)
   puts '[DB] Table "mami_server_configs" created.'
 end
 
-puts "[INFO] The bot will use '#{ENV["MAMI_PREFIX"]}' as the prefix." if ENV["MAMI_PREFIX"]
+prefix = ENV["MAMI_PREFIX"] || "!"
+if ENV["MAMI_CUSTOM_BOT_COMMAND_NAME"] or ENV["MAMI_PREFIX"]
+  cmd_name = ENV['MAMI_CUSTOM_BOT_COMMAND_NAME'] || "mami"
+  puts "[INFO] The bot's administration module will be called with #{prefix}#{cmd_name} <command>."
+end
 
 # Create the bot
 bot = Discordrb::Commands::CommandBot.new(
   token: ENV['MAMI_DISCORD_BOT_TOKEN'], 
   client_id: ENV['MAMI_DISCORD_BOT_ID'], 
-  prefix: ENV["MAMI_PREFIX"] || "!"
+  prefix: prefix,
+  help_command: false
 )
 bot.include! MamiTheSpoilerBot
 
