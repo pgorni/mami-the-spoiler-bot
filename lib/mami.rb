@@ -199,7 +199,7 @@ module MamiTheSpoilerBot
       botcall = "#{event.bot.prefix}#{MAIN_COMMAND_NAME}"
       event.channel.send_embed do |embed|
         embed.title = 'Mami the Spoiler Bot'
-        embed.description = "A simple bot for encoding spoilers"
+        embed.description = "A simple bot for encoding spoilers. [Invite to your server now!](#{event.bot.invite_url})"
         embed.colour = "#FFFF00"
         embed.add_field(
           name: "Usage", 
@@ -210,7 +210,8 @@ module MamiTheSpoilerBot
             "2. Mami style: `[your favorite show]:[who dies first]`\n",
             "3. Dollar sign style: `$$some bad spoiler$$`\n",
             "\n",
-            "The message will disappear and will reappear encoded after **#{server_config[event.server.id][:delay]}s**."
+            "The message will disappear and will reappear encoded after **#{server_config[event.server.id][:delay]}s**.\n",
+            "In order to decode a message, react to it with the #{server_config[event.server.id][:emoji]} emoji (or actually just click the existing reaction button)."
           ].join("")
         )
         embed.add_field(
