@@ -199,7 +199,7 @@ module MamiTheSpoilerBot
       botcall = "#{event.bot.prefix}#{MAIN_COMMAND_NAME}"
       event.channel.send_embed do |embed|
         embed.title = 'Mami the Spoiler Bot'
-        embed.description = "A simple bot for encoding spoilers. [Invite to your server now!](#{event.bot.invite_url})"
+        embed.description = "A simple bot for encoding spoilers."
         embed.colour = "#FFFF00"
         embed.add_field(
           name: "Usage", 
