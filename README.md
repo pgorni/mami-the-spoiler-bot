@@ -139,6 +139,12 @@ You can change the decoding rate limit with the `MAMI_DECODING_RL` environment v
 
 Similarly, the rate limit used in the `!mami test` command can be changed by setting the `MAMI_TEST_CMD_RL` variable.
 
+
+#### Setting the bot as public
+
+If you decide to host your own instance, you can set it as "public", which currently means that a link to invite it will appear in the `help` command.
+You can set your instance as public by setting the `MAMI_IS_PUBLIC` environment variable to `true`.
+
 ### Docker support
 
 The bot actually works with Docker. Here's a sample `docker-compose.yml` file:
@@ -162,6 +168,7 @@ services:
       - MAMI_CUSTOM_BOT_COMMAND_NAME="mami"
       - MAMI_DECODING_RL=5
       - MAMI_TEST_CMD_RL=5
+      - MAMI_IS_PUBLIC="false"
     restart: unless-stopped
 ```
 Edit it as you wish, save it as `docker-compose.yml` and then just run `docker-compose up`. 

@@ -10,6 +10,8 @@ require 'sequel'
   end
 end
 
+puts "[INFO] The bot has been set as a public bot." if ENV["MAMI_IS_PUBLIC"] == "true"
+
 if ENV["MAMI_DELETION_DELAY"]
   puts "[INFO] The bot will wait for #{ENV["MAMI_DELETION_DELAY"]} before deleting a message."
 end

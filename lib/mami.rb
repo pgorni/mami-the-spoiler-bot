@@ -23,10 +23,10 @@ module MamiTheSpoilerBot
   ready do |event|    
     $MamiDB[:mami_server_configs].each do |server|
       _, server_id, emoji, delay, offset = server.values
-      server_config[server_id] = {emoji: emoji, delay: delay, offset: offset}
+      server_config[server_id] = { emoji: emoji, delay: delay, offset: offset }
     end
 
-    puts "[DB] Settings from the DB loaded to memory."
+    puts "[DB] Settings from the DB loaded to memory. Server config count: #{server_config.count}."
 
     event.bot.name = "Mami the Spoiler Bot"
     event.bot.game = "on #{server_config.count} servers"
@@ -40,7 +40,10 @@ module MamiTheSpoilerBot
       "offset": 13
     }
     server_config[event.server.id] = default_server_config
-    $MamiDB[:mami_server_configs].insert( { server_id: event.server.id }.merge(default_server_config) )
+    if $MamiDB[:mami_server_configs].where(server_id: event.server.id).empty?
+      puts "[INFO] Joined server #{event.server.id}."
+      $MamiDB[:mami_server_configs].insert({server_id: event.server.id}.merge(default_server_config))
+    end
     event.bot.game = "on #{server_config.count} servers"
   end
 
@@ -48,6 +51,7 @@ module MamiTheSpoilerBot
   server_delete do |event|
     server_config.delete(event.server.id)
     $MamiDB[:mami_server_configs].where(server_id: event.server.id).delete
+    puts "[INFO] Removed server #{event.server.id}."
     event.bot.game = "on #{server_config.count} servers"
   end
 
@@ -197,9 +201,10 @@ module MamiTheSpoilerBot
       end
     when "help"
       botcall = "#{event.bot.prefix}#{MAIN_COMMAND_NAME}"
+      inv_string = "[Invite to your server now!](#{event.bot.invite_url(permission_bits: 8192)})"
       event.channel.send_embed do |embed|
         embed.title = 'Mami the Spoiler Bot'
-        embed.description = "A simple bot for encoding spoilers."
+        embed.description = "A simple bot for encoding spoilers. #{inv_string if ENV['MAMI_IS_PUBLIC'] == "true"}"
         embed.colour = "#FFFF00"
         embed.add_field(
           name: "Usage", 
