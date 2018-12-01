@@ -29,7 +29,7 @@ module MamiTheSpoilerBot
     puts "[DB] Settings from the DB loaded to memory. Server config count: #{server_config.count}."
 
     event.bot.name = "Mami the Spoiler Bot"
-    event.bot.game = "on #{server_config.count} servers"
+    event.bot.game = "on #{server_config.count} servers | #{event.bot.prefix}#{MAIN_COMMAND_NAME} help"
   end
 
   # When the bot joins a server, create default config for it and save it in the DB
@@ -44,7 +44,7 @@ module MamiTheSpoilerBot
       puts "[INFO] Joined server #{event.server.id}."
       $MamiDB[:mami_server_configs].insert({server_id: event.server.id}.merge(default_server_config))
     end
-    event.bot.game = "on #{server_config.count} servers"
+    event.bot.game = "on #{server_config.count} servers | #{event.bot.prefix}#{MAIN_COMMAND_NAME} help"
   end
 
   # When the bot leaves a server, remove its config from memory and the DB
@@ -52,7 +52,7 @@ module MamiTheSpoilerBot
     server_config.delete(event.server.id)
     $MamiDB[:mami_server_configs].where(server_id: event.server.id).delete
     puts "[INFO] Removed server #{event.server.id}."
-    event.bot.game = "on #{server_config.count} servers"
+    event.bot.game = "on #{server_config.count} servers | #{event.bot.prefix}#{MAIN_COMMAND_NAME} help"
   end
 
   # Reacting to spoilers
