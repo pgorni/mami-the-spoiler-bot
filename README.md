@@ -78,12 +78,17 @@ All the examples below assume you're using the default `!` prefix and the defaul
 This command can be used to check if the bot is online and working well before attempting to spoil. It can also be used to check if the bot settings work for everyone.
 The default rate limit is 5 seconds.
 
-### Is the bot publicly hosted somewhere?
-No, but it probably will be soon enough.
-
 ### Known issues
 - see the "Mobile devices" section
 - if you change the decoding emoji, older messages with the old decoding emoji will stop being decoded - you probably can react to these messages with the new decoding emoji and it'll enable their decoding
+
+### Is the bot publicly hosted somewhere?
+A public instance is running, [you can invite it here](https://discordapp.com/oauth2/authorize?&client_id=489418522812743681&permissions=8192&scope=bot). Note that it's running on limited resources, so your donations are more than welcome!
+
+
+<a href="https://patreon.com/zanbots">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" height="50">
+</a>
 
 ### Installing
 
@@ -183,6 +188,7 @@ Edit it as you wish, save it as `docker-compose.yml` and then just run `docker-c
 - [mysql2](https://github.com/brianmario/mysql2) ~> 0.4.10
 - [pg](https://bitbucket.org/ged/ruby-pg/wiki/Home) ~> 0.18.4
 
+
 ### Contributing
 The project is under the GNU GPLv3 license. In order to contribute:
 
@@ -190,6 +196,12 @@ The project is under the GNU GPLv3 license. In order to contribute:
 - change the code
 - write spec tests (the project uses [RSpec](http://rspec.info)), make sure they pass
 - issue pull requests
+
+### Donations
+You can pay for the public instance's upkeep and the project's development on Patreon :revolving_hearts:
+<a href="https://patreon.com/zanbots">
+  <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" height="50">
+</a>
 
 ### To do
 - increase spec tests coverage
