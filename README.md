@@ -199,6 +199,8 @@ The project is under the GNU GPLv3 license. In order to contribute:
 
 ### Donations
 You can pay for the public instance's upkeep and the project's development on Patreon :revolving_hearts:
+
+
 <a href="https://patreon.com/zanbots">
   <img src="https://c5.patreon.com/external/logo/become_a_patron_button@2x.png" height="50">
 </a>
