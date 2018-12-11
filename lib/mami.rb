@@ -227,8 +227,13 @@ module MamiTheSpoilerBot
             "`#{botcall} test`: test the bot's settings\n",
             "`#{botcall} set_delay <delay>`: set how many seconds should pass before the encoded message is posted again\n",
             "`#{botcall} set_offset <offset>`: change the ROT13 offset\n",
+            "`#{botcall} set_emoji <offset>`: change the emoji used in decoding\n",
             "`#{botcall} display_config`: display the current configuration\n"
           ].join("")
+        )
+        embed.add_field(
+          name: "Donations",
+          value: "Like the bot? [Support it on Patreon!](https://patreon.com/zanbots)"
         )
       end
     end
