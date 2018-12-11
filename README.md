@@ -187,6 +187,7 @@ Edit it as you wish, save it as `docker-compose.yml` and then just run `docker-c
 - [sqlite3-ruby](https://github.com/sparklemotion/sqlite3-ruby) ~> 1.3.13
 - [mysql2](https://github.com/brianmario/mysql2) ~> 0.4.10
 - [pg](https://bitbucket.org/ged/ruby-pg/wiki/Home) ~> 0.18.4
+- [twemoji](https://github.com/jollygoodcode/twemoji) ~> 3.1
 
 
 ### Contributing

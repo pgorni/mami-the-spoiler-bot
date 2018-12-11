@@ -1,5 +1,6 @@
 require 'discordrb'
 require_relative 'spoiler_encoder.rb'
+require 'twemoji'
 
 module MamiTheSpoilerBot
   extend Discordrb::EventContainer
@@ -63,21 +64,26 @@ module MamiTheSpoilerBot
 
     # Delete the message after waiting for a couple of miliseconds
     sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
-    event.message.delete
 
-    # Duplicate original text
-    safe_text = event.text.dup
+    begin
+      event.message.delete
+    rescue Discordrb::Errors::NoPermission => e
+      event.respond("I won't work without the \"Manage Messages\" permission!")
+    else
+      # Duplicate original text
+      safe_text = event.text.dup
 
-    # Substitute the spoilers
-    safe_text = SpoilerEncoder.enc_standard(safe_text, offset, STANDARD_REGEX)
+      # Substitute the spoilers
+      safe_text = SpoilerEncoder.enc_standard(safe_text, offset, STANDARD_REGEX)
 
-    # Wait a while so that mobile devices don't lag behind
-    sleep(delay)
+      # Wait a while so that mobile devices don't lag behind
+      sleep(delay)
 
-    # Post the spoilerless message and react to that message
-    event.respond(
-      "CAUTION! This message may contain spoilers! \n#{event.author.mention} said: #{safe_text}"
-    ).create_reaction(emoji)
+      # Post the spoilerless message and react to that message
+      event.respond(
+        "CAUTION! This message may contain spoilers! \n#{event.author.mention} said: #{safe_text}"
+      ).create_reaction(emoji)
+    end
   end
 
   message(contains: MODERN_REGEX) do |event|
@@ -86,21 +92,26 @@ module MamiTheSpoilerBot
 
     # Delete the message after waiting for a couple of miliseconds
     sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
-    event.message.delete
 
-    # Duplicate original text
-    safe_text = event.text.dup
+    begin
+      event.message.delete
+    rescue Discordrb::Errors::NoPermission => e
+      event.respond("I won't work without the \"Manage Messages\" permission!")
+    else
+      # Duplicate original text
+      safe_text = event.text.dup
 
-    # Substitute the spoilers
-    safe_text = SpoilerEncoder.enc_modern(safe_text, offset)
+      # Substitute the spoilers
+      safe_text = SpoilerEncoder.enc_modern(safe_text, offset)
 
-    # Wait a while so that mobile devices don't lag behind
-    sleep(delay)
+      # Wait a while so that mobile devices don't lag behind
+      sleep(delay)
 
-    # Post the spoilerless message and react to that message
-    event.respond(
-      "CAUTION! This message may contain spoilers!\n #{event.author.mention} said: #{safe_text}"
-    ).create_reaction(emoji)
+      # Post the spoilerless message and react to that message
+      event.respond(
+        "CAUTION! This message may contain spoilers!\n #{event.author.mention} said: #{safe_text}"
+      ).create_reaction(emoji)
+    end
   end
 
   message(contains: DOLLAR_SIGN_REGEX) do |event|
@@ -109,41 +120,50 @@ module MamiTheSpoilerBot
 
     # Delete the message after waiting for a couple of miliseconds
     sleep(ENV["MAMI_DELETION_DELAY"].to_f) if ENV["MAMI_DELETION_DELAY"]
-    event.message.delete
+    
+    begin
+      event.message.delete
+    rescue Discordrb::Errors::NoPermission => e
+      event.respond("I won't work without the \"Manage Messages\" permission!")
+    else
+      # Duplicate original text
+      safe_text = event.text.dup
 
-    # Duplicate original text
-    safe_text = event.text.dup
+      # Substitute the spoilers
+      safe_text = SpoilerEncoder.enc_standard(safe_text, offset, DOLLAR_SIGN_REGEX)
 
-    # Substitute the spoilers
-    safe_text = SpoilerEncoder.enc_standard(safe_text, offset, DOLLAR_SIGN_REGEX)
+      # Wait a while so that mobile devices don't lag behind
+      sleep(delay)
 
-    # Wait a while so that mobile devices don't lag behind
-    sleep(delay)
-
-    # Post the spoilerless message and react to that message
-    event.respond(
-      "CAUTION! This message may contain spoilers!\n #{event.author.mention} said: #{safe_text}"
-    ).create_reaction(emoji)
+      # Post the spoilerless message and react to that message
+      event.respond(
+        "CAUTION! This message may contain spoilers!\n #{event.author.mention} said: #{safe_text}"
+      ).create_reaction(emoji)
+    end
   end
 
   reaction_add do |event|
     # Do not do anything if the reaction was added by the bot itself
-    unless event.user.current_bot? 
-      if event.emoji.name == server_config[event.channel.server.id][:emoji] and event.message.from_bot?
-        timeout = rate_limiter.rate_limited?(:decoding, event.user)
-        event.user.pm(
-          unless timeout
-            SpoilerEncoder.decode(event.message.text)
-          else
-            "Calm down for #{timeout.ceil} more #{timeout.ceil == 1 ? "second" : "seconds"}."
-          end
-        )
-      end
+    unless event.user.current_bot?
+      next unless ["to_reaction", "name"]
+      .map { |f| event.emoji.send(f) == server_config[event.channel.server.id][:emoji] }
+      .include? true and event.message.from_bot?
+
+      timeout = rate_limiter.rate_limited?(:decoding, event.user)
+      event.user.pm(
+        unless timeout
+          SpoilerEncoder.decode(event.message.text)
+        else
+          "Calm down for #{timeout.ceil} more #{timeout.ceil == 1 ? "second" : "seconds"}."
+        end
+      )
     end
   end
 
   # Commands
   command(MAIN_COMMAND_NAME) do |event, command, *args|
+    next if event.channel.pm?
+
     server_id = event.server.id
 
     case command
@@ -161,7 +181,15 @@ module MamiTheSpoilerBot
         when "offset"
           args.first.to_i
         when "emoji"
-          args.first
+          # Checking if the input is actually an emoji
+          if event.message.emoji? 
+            event.message.emoji.first.to_reaction
+          elsif Twemoji.find_by(unicode: args.first)
+            args.first
+          else
+            event.respond("There's no emoji to use.")
+            next
+          end
       end
 
       server_config[server_id][setting.to_sym] = set_val
