@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.5.1'
 
-gem 'discordrb', '~> 3.2.1' # requires libsodium installed on the system
+gem 'discordrb', '~> 3.3.0' # requires libsodium installed on the system
 gem 'rot13', '~> 0.1.3'
 gem 'sequel', '~> 5.1.0'
 gem 'sqlite3', '~> 1.3.13' # requires sqlite3 development packages installed on the system
